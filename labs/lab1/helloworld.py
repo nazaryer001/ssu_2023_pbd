@@ -1,0 +1,1 @@
+primt ("Hello, world!")
