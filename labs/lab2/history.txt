@@ -1,0 +1,49 @@
+    Переходжу до папки з робочими файлами
+    (Виконані перевірочні дії "стану" системи)
+  213  cd ssu_2023_pbd/
+  214  git status
+  216  git remote -v
+  217  gitk
+  218  git checkout master
+  219  gitk
+
+    Додаю віддалену репозиторію для скачування оновленя й скачуємо оновлення
+  224  git remote add upstream https://github.com/wellic/ssu_2023_pbd
+  225  git remote -v
+  226  git fetch -pt upstream
+  227  gitk
+  234  git checkout master
+  235  git rebase upstream/master
+  239  git checkout master 
+
+    Закидую до свого репозиторію
+  242  git push -fu origin master:master
+  247  git checkout master
+  249  gitk
+
+    Встановлю git hooks
+  250  cd utils/git
+  251  bash setup_hooks.sh
+  253  cd ..//..
+
+    Поєдную гілки lab1 and master 
+  255  git checkout lab1
+  256  git rebase master
+  257  gitk --all
+
+    Закидую  до свого репозиторію
+  258  git push -u origin lab1:lab1
+  259  git push -fu origin lab1:lab1
+    
+    Створюємо гілку lab2 з гілки  master
+  261  git checkout -b lab2 master
+  262  gitk --all
+    
+    Створю директорію lab2 в labs, в ній папку lab2 з поясненням виконаних дій
+  263  cd labs
+  264  mkdir lab2
+  265  cd lab2
+  266  history > history.txt
+
+	Примітка : не співпадання послідовності номерів команд виникло через використання інших,
+	таких як gitk, git chackout <branch> (за для наглядного розуміння виконання своїх дій) та помилково вписаних команд.
