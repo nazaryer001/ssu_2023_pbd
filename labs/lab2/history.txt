@@ -1,0 +1,9 @@
+   97  git remote add upstream https://github.com/wellic/ssu_2023_pbd
+   98  git fetch -pt upstream
+   99  git checkout master
+  100  git rebase upstream/master
+  101  git push -fu origin master:master
+  102  bash setup_hooks.sh
+  103  git checkout -b lab2 lab1
+  104  mkdir lab2
+  105  history > history.txt
