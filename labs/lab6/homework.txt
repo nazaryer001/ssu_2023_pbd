@@ -1,0 +1,51 @@
+>>> import pandas as pd
+
+>>> orders = pd.read_csv('data/orders.csv', index_col='id')
+
+>>> customers = pd.read_csv('data/customers.csv', index_col='id')
+
+>>> orders_2017 = orders.query("order_date >= '2017-01-01' & order_date <= '2017-12-31'")
+
+>>> orders_2017.head()
+
+        order_date ship_mode customer_id     sales
+id                                                
+100013  2017-11-06  Standard    ZC-21910    29.690
+100055  2017-05-28  Standard    MD-17860   152.590
+100097  2017-11-26    Second    MN-17935  1115.250
+100111  2017-09-20  Standard    SV-20365  7359.918
+100160  2017-09-07  Standard    CB-12025    49.688
+
+>>> with_customers_2017 = pd.merge(customers, orders_2017, how='inner', left_index=True, right_on='customer_id')
+
+>>> with_customers_2017.head(3)
+
+                   name    segment       state  ... ship_mode customer_id    sales
+id                                              ...                               
+164098      Claire Gute   Consumer    Kentucky  ...     First    CG-12520   18.160
+125745  Darrin Van Huff  Corporate  California  ...  Standard    DV-13045   19.520
+139773  Darrin Van Huff  Corporate  California  ...  Same Day    DV-13045  188.552
+[3 rows x 8 columns]
+
+>>> grouped_2017 = with_customers_2017.groupby('city')['sales'].sum()
+
+>>> grouped_2017.head()
+
+city
+Akron           1573.860
+Albuquerque     1577.784
+Allen            606.232
+Amarillo         372.060
+Apple Valley     753.661
+Name: sales, dtype: float64
+
+>>> worst4 = grouped_2017.sort_values(ascending=True).head(4)
+
+>>> worst4
+
+city
+Riverside       5.760
+Lindenhurst     9.248
+Hesperia        9.856
+Lafayette      14.730
+Name: sales, dtype: float64

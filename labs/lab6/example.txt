@@ -1,0 +1,392 @@
+>>> import pandas as pd
+
+>>> orders = pd.read_csv('data/orders.csv', index_col='id')
+
+>>> orders
+
+        order_date ship_mode customer_id     sales
+id                                                
+100006  2014-09-07  Standard    DK-13375   377.970
+100090  2014-07-08  Standard    EB-13705   699.192
+100293  2014-03-14  Standard    NF-18475    91.056
+100328  2014-01-28  Standard    JC-15340     3.928
+100363  2014-04-08  Standard    JM-15655    21.376
+            ...       ...         ...       ...
+168802  2017-11-03  Standard    JO-15145    18.368
+169320  2017-07-23    Second    LH-16900   171.430
+169488  2017-09-07     First    AA-10375    56.860
+169502  2017-08-28  Standard    MG-17650   113.410
+169551  2017-07-07     First    RL-19615  1344.838
+[5009 rows x 4 columns]
+
+>>> orders.shape
+
+(5009, 4)
+
+>>> orders.columns
+
+Index(['order_date', 'ship_mode', 'customer_id', 'sales'], dtype='object')
+
+>>> orders.dtypes
+
+order_date      object
+ship_mode       object
+customer_id     object
+sales          float64
+dtype: object
+
+>>> orders.index
+
+Int64Index([100006, 100090, 100293, 100328, 100363, 100391, 100678, 100706,
+            100762, 100860,
+            ...
+            167570, 167920, 168116, 168613, 168690, 168802, 169320, 169488,
+            169502, 169551],
+           dtype='int64', name='id', length=5009)
+
+>>> orders.describe()
+
+              sales
+count   5009.000000
+mean     458.614666
+std      954.730953
+min        0.556000
+25%       37.630000
+50%      151.960000
+75%      512.064000
+max    23661.228000
+
+>>> orders.head(2)
+
+        order_date ship_mode customer_id    sales
+id                                               
+100006  2014-09-07  Standard    DK-13375  377.970
+100090  2014-07-08  Standard    EB-13705  699.192
+
+>>> orders.sample(2)
+
+        order_date ship_mode customer_id    sales
+id                                               
+129532  2015-12-08  Standard    YS-21880  457.960
+104759  2014-03-31  Standard    DD-13570   88.118
+
+>>> orders['sales']
+
+id
+100006     377.970
+100090     699.192
+100293      91.056
+100328       3.928
+100363      21.376
+            ...   
+168802      18.368
+169320     171.430
+169488      56.860
+169502     113.410
+169551    1344.838
+Name: sales, Length: 5009, dtype: float64
+
+>>> orders[['customer_id', 'sales']]
+
+       customer_id     sales
+id                          
+100006    DK-13375   377.970
+100090    EB-13705   699.192
+100293    NF-18475    91.056
+100328    JC-15340     3.928
+100363    JM-15655    21.376
+            ...       ...
+168802    JO-15145    18.368
+169320    LH-16900   171.430
+169488    AA-10375    56.860
+169502    MG-17650   113.410
+169551    RL-19615  1344.838
+[5009 rows x 2 columns]
+
+>>> show_these_orders = [100363, 100363, 100706]
+
+>>> orders.loc[show_these_orders]
+
+        order_date ship_mode customer_id    sales
+id                                               
+100363  2014-04-08  Standard    JM-15655   21.376
+100363  2014-04-08  Standard    JM-15655   21.376
+100706  2014-12-16    Second    LE-16810  129.440
+
+>>> show_these_orders = [1, 2, 3]
+
+>>> orders.iloc[show_these_orders]
+
+        order_date ship_mode customer_id    sales
+id                                               
+100090  2014-07-08  Standard    EB-13705  699.192
+100293  2014-03-14  Standard    NF-18475   91.056
+100328  2014-01-28  Standard    JC-15340    3.928
+
+>>> columns = ['customer_id', 'sales']
+
+>>> rows = [100363, 100363, 100706]
+
+>>> orders.loc[rows][columns]
+
+       customer_id    sales
+id                         
+100363    JM-15655   21.376
+100363    JM-15655   21.376
+100706    LE-16810  129.440
+
+>>> filter_large = orders['sales'] > 2000
+
+>>> orders.loc[filter_large]
+
+        order_date ship_mode customer_id     sales
+id                                                
+102988  2014-04-05    Second    GM-14695  4251.920
+110408  2014-10-18    Second    AS-10225  2216.800
+115812  2014-06-09  Standard    BH-11710  3714.304
+116246  2014-09-12    Second    LW-17215  3785.292
+116904  2014-09-23  Standard    SC-20095  9900.190
+            ...       ...         ...       ...
+162558  2017-10-02     First    Dp-13240  2437.672
+163300  2017-09-15  Standard    ES-14020  2911.784
+167318  2017-07-26  Standard    GZ-14545  2012.302
+167402  2017-01-13    Second    CP-12085  4619.330
+168116  2017-11-04  Same Day    GT-14635  8167.420
+[209 rows x 4 columns]
+
+>>> filter_large = orders['sales'] > 2000
+
+>>> filter_first_class = orders['ship_mode'] == 'First'
+
+>>> orders.loc[filter_large & filter_first_class]
+
+        order_date ship_mode customer_id      sales
+id                                                 
+120474  2014-12-01     First    RP-19390   2854.480
+125997  2014-09-20     First    MW-18220   3519.370
+128524  2014-11-11     First    MZ-17515   2158.694
+136567  2014-12-20     First    PS-19045   2884.370
+154627  2014-10-29     First    SA-20830   2735.952
+111829  2015-03-19     First    FH-14365   4607.270
+120782  2015-04-28     First    SD-20485   3999.702
+121720  2015-06-11     First    JE-15610   3165.744
+131338  2015-08-09     First    NP-18325   3385.614
+137974  2015-04-16     First    LL-16840   2298.900
+147830  2015-12-15     First    NF-18385   4190.206
+160227  2015-11-02     First    ED-13885   2621.322
+164777  2015-01-27     First    SC-20305   2803.920
+129714  2016-09-01     First    AB-10060   4438.686
+133711  2016-11-26     First    MC-17425   3236.410
+159016  2016-03-10     First    KF-16285   4173.812
+168354  2016-09-19     First    RH-19510   2545.120
+169663  2016-03-10     First    RH-19510   3384.450
+120376  2017-12-22     First    TP-21130   2283.430
+127180  2017-10-22     First    TA-21385  13716.458
+140151  2017-03-23     First    RB-19360  14052.480
+145219  2017-12-24     First    RM-19675   2970.432
+149881  2017-04-01     First    NC-18535   5282.648
+159366  2017-01-07     First    BW-11110   3059.982
+163825  2015-06-16     First    LC-16885   3184.356
+116729  2016-12-25     First    GK-14620   2875.544
+162558  2017-10-02     First    Dp-13240   2437.672
+
+>>> orders.query("sales > 2000 & ship_mode == 'First'")
+
+        order_date ship_mode customer_id      sales
+id                                                 
+120474  2014-12-01     First    RP-19390   2854.480
+125997  2014-09-20     First    MW-18220   3519.370
+128524  2014-11-11     First    MZ-17515   2158.694
+136567  2014-12-20     First    PS-19045   2884.370
+154627  2014-10-29     First    SA-20830   2735.952
+111829  2015-03-19     First    FH-14365   4607.270
+120782  2015-04-28     First    SD-20485   3999.702
+121720  2015-06-11     First    JE-15610   3165.744
+131338  2015-08-09     First    NP-18325   3385.614
+137974  2015-04-16     First    LL-16840   2298.900
+147830  2015-12-15     First    NF-18385   4190.206
+160227  2015-11-02     First    ED-13885   2621.322
+164777  2015-01-27     First    SC-20305   2803.920
+129714  2016-09-01     First    AB-10060   4438.686
+133711  2016-11-26     First    MC-17425   3236.410
+159016  2016-03-10     First    KF-16285   4173.812
+168354  2016-09-19     First    RH-19510   2545.120
+169663  2016-03-10     First    RH-19510   3384.450
+120376  2017-12-22     First    TP-21130   2283.430
+127180  2017-10-22     First    TA-21385  13716.458
+140151  2017-03-23     First    RB-19360  14052.480
+145219  2017-12-24     First    RM-19675   2970.432
+149881  2017-04-01     First    NC-18535   5282.648
+159366  2017-01-07     First    BW-11110   3059.982
+163825  2015-06-16     First    LC-16885   3184.356
+116729  2016-12-25     First    GK-14620   2875.544
+162558  2017-10-02     First    Dp-13240   2437.672
+
+>>> sales_filter = 2000
+
+>>> ship_mode_filter = 'First'
+
+>>> orders.query('sales > @sales_filter & ship_mode == @ship_mode_filter')
+
+        order_date ship_mode customer_id      sales
+id                                                 
+120474  2014-12-01     First    RP-19390   2854.480
+125997  2014-09-20     First    MW-18220   3519.370
+128524  2014-11-11     First    MZ-17515   2158.694
+136567  2014-12-20     First    PS-19045   2884.370
+154627  2014-10-29     First    SA-20830   2735.952
+111829  2015-03-19     First    FH-14365   4607.270
+120782  2015-04-28     First    SD-20485   3999.702
+121720  2015-06-11     First    JE-15610   3165.744
+131338  2015-08-09     First    NP-18325   3385.614
+137974  2015-04-16     First    LL-16840   2298.900
+147830  2015-12-15     First    NF-18385   4190.206
+160227  2015-11-02     First    ED-13885   2621.322
+164777  2015-01-27     First    SC-20305   2803.920
+129714  2016-09-01     First    AB-10060   4438.686
+133711  2016-11-26     First    MC-17425   3236.410
+159016  2016-03-10     First    KF-16285   4173.812
+168354  2016-09-19     First    RH-19510   2545.120
+169663  2016-03-10     First    RH-19510   3384.450
+120376  2017-12-22     First    TP-21130   2283.430
+127180  2017-10-22     First    TA-21385  13716.458
+140151  2017-03-23     First    RB-19360  14052.480
+145219  2017-12-24     First    RM-19675   2970.432
+149881  2017-04-01     First    NC-18535   5282.648
+159366  2017-01-07     First    BW-11110   3059.982
+163825  2015-06-16     First    LC-16885   3184.356
+116729  2016-12-25     First    GK-14620   2875.544
+162558  2017-10-02     First    Dp-13240   2437.672
+
+>>> orders['sales'].sum()
+
+2297200.8603000003
+
+>>> orders.groupby('ship_mode')['sales'].sum()
+
+ship_mode
+First       3.514284e+05
+Same Day    1.283631e+05
+Second      4.591936e+05
+Standard    1.358216e+06
+Name: sales, dtype: float64
+
+>>> pd.options.display.float_format = '{:,.1f}'.format
+
+>>> orders.groupby('ship_mode')['sales'].sum()
+
+ship_mode
+First        351,428.4
+Same Day     128,363.1
+Second       459,193.6
+Standard   1,358,215.7
+Name: sales, dtype: float64
+
+>>> orders.groupby(['ship_mode', 'order_date'])['sales'].sum()
+
+ship_mode  order_date
+First      2014-01-06      12.8
+           2014-01-11       9.9
+           2014-01-14      62.0
+           2014-01-15     149.9
+           2014-01-19     378.6
+                          ...  
+Standard   2017-12-25   1,338.3
+           2017-12-26      63.9
+           2017-12-28     589.6
+           2017-12-29   1,094.8
+           2017-12-30     713.8
+Name: sales, Length: 2498, dtype: float64
+
+>>> orders.groupby(['ship_mode', 'order_date'])['sales'].agg(['sum', 'count'])
+
+                         sum  count
+ship_mode order_date               
+First     2014-01-06    12.8      1
+          2014-01-11     9.9      1
+          2014-01-14    62.0      1
+          2014-01-15   149.9      1
+          2014-01-19   378.6      1
+                      ...    ...
+Standard  2017-12-25 1,338.3      7
+          2017-12-26    63.9      3
+          2017-12-28   589.6      7
+          2017-12-29 1,094.8      4
+          2017-12-30   713.8      4
+[2498 rows x 2 columns]
+
+>>> orders.groupby(['ship_mode', 'order_date'])['sales'].agg(['sum']).sort_values(by='sum', ascending=False).head(10)
+
+                          sum
+ship_mode order_date         
+Standard  2014-03-18 26,908.4
+          2016-10-02 18,398.2
+First     2017-03-23 14,299.1
+Standard  2014-09-08 14,060.4
+First     2017-10-22 13,716.5
+Standard  2016-12-17 12,185.1
+          2017-11-17 12,112.5
+          2015-09-17 11,467.6
+          2016-05-23 10,561.0
+          2014-09-23 10,478.6
+
+>>> customers = pd.read_csv('data/customers.csv', index_col='id')
+
+>>> cust_filter = 'CG-12520'
+
+>>> orders.query('customer_id == @cust_filter')
+
+        order_date ship_mode customer_id  sales
+id                                             
+152156  2016-11-08    Second    CG-12520  993.9
+164098  2017-01-26     First    CG-12520   18.2
+123918  2015-10-15  Same Day    CG-12520  136.7
+
+>>> new_df = pd.merge(orders, customers, how='inner', left_on='customer_id', right_index=True)
+
+>>> new_df.columns
+
+Index(['order_date', 'ship_mode', 'customer_id', 'sales', 'name', 'segment',
+       'state', 'city'],
+      dtype='object')
+
+>>> orders_2016 = orders.query("order_date >= '2016-01-01' & order_date <= '2016-12-31'")
+
+>>> orders_2016.head(2)
+
+        order_date ship_mode customer_id  sales
+id                                             
+100041  2016-11-20  Standard    BF-10975  328.5
+100083  2016-11-24  Standard    CD-11980   24.8
+
+>>> with_customers_2016 = pd.merge(customers, orders_2016, how='inner', left_index=True, right_on='customer_id')
+
+>>> with_customers_2016.head(3)
+
+                   name    segment       state  ... ship_mode customer_id sales
+id                                              ...                            
+152156      Claire Gute   Consumer    Kentucky  ...    Second    CG-12520 993.9
+106656  Darrin Van Huff  Corporate  California  ...     First    DV-13045  23.0
+138688  Darrin Van Huff  Corporate  California  ...    Second    DV-13045  14.6
+[3 rows x 8 columns]
+
+>>> grouped_2016 = with_customers_2016.groupby('city')['sales'].sum()
+
+>>> grouped_2016.head(2)
+
+city
+Akron         1,763.0
+Albuquerque     692.9
+Name: sales, dtype: float64
+
+>>> top5 = grouped_2016.sort_values(ascending=False).head(5)
+
+>>> top5
+
+city
+New York City   53,094.1
+Philadelphia    39,895.5
+Seattle         33,955.5
+Los Angeles     33,611.1
+San Francisco   27,990.0
+Name: sales, dtype: float64
