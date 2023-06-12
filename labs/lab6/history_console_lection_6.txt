@@ -1,0 +1,536 @@
+# Повторення дій в консолі  з лекції 6
+# Зі змінами:
+# 1. 2000, замість 1000;
+# 2. Замінити всі значення метода head() та sample() на значення "2"
+# 3. Всі окремі дослідження для first_class замінити на second_class
+
+
+
+# Імпорт бібліотек:
+import numpy as np
+import pandas as pd
+
+
+
+# Завантаження даних з файлів:
+pd.read_excel('data/file.xlsx', sheet_name='Sheet1')
+
+  month  customers  sales
+0   feb         10    200
+
+
+
+# CSV:
+pd.read_csv('data/file.csv')
+
+    id month  customers  sales
+0  123   feb         10    200
+
+
+
+# TSV:
+pd.read_csv('data/file.tsv', sep='\t')
+
+    id month  customers  sales
+0  123   feb         10    200
+
+
+pd.read_csv('data/file.csv', index_col='id')
+
+    month  customers  sales
+id                         
+123   feb         10    200
+
+
+
+#  Досліджуємо завантажені дані:
+orders = pd.read_csv('data/orders.csv', index_col='id')
+
+orders
+        order_date ship_mode customer_id     sales
+id                                                
+100006  2014-09-07  Standard    DK-13375   377.970
+100090  2014-07-08  Standard    EB-13705   699.192
+100293  2014-03-14  Standard    NF-18475    91.056
+100328  2014-01-28  Standard    JC-15340     3.928
+100363  2014-04-08  Standard    JM-15655    21.376
+            ...       ...         ...       ...
+168802  2017-11-03  Standard    JO-15145    18.368
+169320  2017-07-23    Second    LH-16900   171.430
+169488  2017-09-07     First    AA-10375    56.860
+169502  2017-08-28  Standard    MG-17650   113.410
+169551  2017-07-07     First    RL-19615  1344.838
+[5009 rows x 4 columns]
+
+
+
+# .shape:
+orders.shape
+
+(5009, 4)
+
+
+
+# .columns:
+orders.columns
+
+Index(['order_date', 'ship_mode', 'customer_id', 'sales'], dtype='object')
+
+
+
+# .dtypes:
+orders.dtypes
+
+order_date      object
+ship_mode       object
+customer_id     object
+sales          float64
+dtype: object
+
+
+
+# .index:
+orders.index
+
+Int64Index([100006, 100090, 100293, 100328, 100363, 100391, 100678, 100706,
+            100762, 100860,
+            ...
+            167570, 167920, 168116, 168613, 168690, 168802, 169320, 169488,
+            169502, 169551],
+           dtype='int64', name='id', length=5009)
+
+
+
+# orders.describe():
+orders.describe()
+
+              sales
+count   5009.000000
+mean     458.614666
+std      954.730953
+min        0.556000
+25%       37.630000
+50%      151.960000
+
+
+
+orders.head(2)
+
+        order_date ship_mode customer_id    sales
+id                                               
+100006  2014-09-07  Standard    DK-13375  377.970
+100090  2014-07-08  Standard    EB-13705  699.192
+
+
+
+orders.sample(2)
+
+        order_date ship_mode customer_id     sales
+id                                                
+120404  2017-11-20    Second    KH-16330   623.930
+150714  2015-10-26  Standard    KH-16690  1215.269
+
+
+
+
+# Отримуємо дані з датафреймів:
+orders['sales']
+
+id
+100006     377.970
+100090     699.192
+100293      91.056
+100328       3.928
+100363      21.376
+            ...   
+168802      18.368
+169320     171.430
+169488      56.860
+169502     113.410
+169551    1344.838
+Name: sales, Length: 5009, dtype: float64
+
+
+
+orders[['customer_id', 'sales']]
+
+       customer_id     sales
+id                          
+100006    DK-13375   377.970
+100090    EB-13705   699.192
+100293    NF-18475    91.056
+100328    JC-15340     3.928
+100363    JM-15655    21.376
+            ...       ...
+168802    JO-15145    18.368
+169320    LH-16900   171.430
+169488    AA-10375    56.860
+169502    MG-17650   113.410
+169551    RL-19615  1344.838
+[5009 rows x 2 columns]
+
+
+
+show_these_orders = [100363, 100363, 100706]
+orders.loc[show_these_orders]
+
+        order_date ship_mode customer_id    sales
+id                                               
+100363  2014-04-08  Standard    JM-15655   21.376
+100363  2014-04-08  Standard    JM-15655   21.376
+100706  2014-12-16    Second    LE-16810  129.440
+
+
+
+show_these_orders = [1, 2, 3]
+orders.iloc[show_these_orders]
+
+        order_date ship_mode customer_id    sales
+id                                               
+100090  2014-07-08  Standard    EB-13705  699.192
+100293  2014-03-14  Standard    NF-18475   91.056
+100328  2014-01-28  Standard    JC-15340    3.928
+
+
+
+columns = ['customer_id', 'sales']
+rows = [100363, 100363, 100706]
+orders.loc[rows][columns]
+
+       customer_id    sales
+id                         
+100363    JM-15655   21.376
+100363    JM-15655   21.376
+100706    LE-16810  129.440
+
+
+
+# Умовні оператори. Булевий індекс:
+filter_large = orders['sales'] > 2000
+orders.loc[filter_large]
+
+        order_date ship_mode customer_id     sales
+id                                                
+102988  2014-04-05    Second    GM-14695  4251.920
+110408  2014-10-18    Second    AS-10225  2216.800
+115812  2014-06-09  Standard    BH-11710  3714.304
+116246  2014-09-12    Second    LW-17215  3785.292
+116904  2014-09-23  Standard    SC-20095  9900.190
+            ...       ...         ...       ...
+162558  2017-10-02     First    Dp-13240  2437.672
+163300  2017-09-15  Standard    ES-14020  2911.784
+167318  2017-07-26  Standard    GZ-14545  2012.302
+167402  2017-01-13    Second    CP-12085  4619.330
+168116  2017-11-04  Same Day    GT-14635  8167.420
+[209 rows x 4 columns]
+
+
+
+filter_large = orders['sales'] > 2000
+filter_second_class = orders['ship_mode'] == 'Second'
+orders.loc[filter_large & filter_second_class]
+
+        order_date ship_mode customer_id      sales
+id                                                 
+102988  2014-04-05    Second    GM-14695  4251.9200
+110408  2014-10-18    Second    AS-10225  2216.8000
+116246  2014-09-12    Second    LW-17215  3785.2920
+126361  2014-08-04    Second    VD-21670  2126.0340
+126403  2014-09-09    Second    RR-19525  2304.3700
+126683  2014-09-29    Second    PP-18955  2354.9800
+131926  2014-06-01    Second    DW-13480  3745.6300
+143917  2014-07-25    Second    KL-16645  8319.2900
+145387  2014-10-31    Second    AM-10705  2116.5060
+168494  2014-12-12    Second    NP-18700  4630.5105
+116638  2015-01-28    Second    JH-15985  4297.6440
+123113  2015-11-23    Second    AT-10735  2643.0600
+130659  2015-12-04    Second    MS-17365  2201.8640
+135622  2015-12-08    Second    TT-21460  2079.1120
+135685  2015-11-16    Second    MP-18175  2233.0200
+137113  2015-12-01    Second    TW-21025  4210.6500
+100300  2016-06-24    Second    MJ-17740  4823.0900
+108987  2016-09-08    Second    AG-10675  2620.9376
+122903  2016-05-27    Second    LA-16780  3963.5700
+135265  2016-07-07    Second    CC-12370  3136.8680
+136301  2016-03-13    Second    EH-13765  4940.8700
+138478  2016-10-21    Second    DP-13390  4685.0760
+143805  2016-12-01    Second    JD-15895  2145.2500
+147256  2016-10-17    Second    FC-14245  2377.5600
+158841  2016-02-02    Second    SE-20110  8805.0400
+163167  2016-11-28    Second    RF-19345  2673.6900
+117212  2017-02-26    Second    BT-11530  2110.7200
+118892  2017-08-17    Second    TP-21415  4416.1740
+121559  2017-06-01    Second    HW-14935  4472.3200
+123967  2017-11-01    Second    SF-20200  2690.7400
+129021  2017-08-23    Second    PO-18850  4590.3440
+133263  2017-03-31    Second    JE-15610  3098.6100
+138289  2017-01-16    Second    AR-10540  5802.7000
+143567  2017-11-02    Second    TB-21175  3291.0700
+152912  2017-11-09    Second    BM-11650  3013.7800
+158379  2017-09-22    Second    JA-15970  4749.3270
+161956  2017-08-27    Second    DR-12880  2971.7920
+106992  2014-09-19    Second    SB-20290  5579.9400
+135972  2014-09-21    Second    JG-15115  2046.3540
+134558  2015-12-19    Second    PM-19135  3332.9740
+114013  2016-03-13    Second    SC-20770  2550.5870
+167402  2017-01-13    Second    CP-12085  4619.3300
+
+
+
+orders.query("sales > 2000 & ship_mode == 'Second'")
+
+        order_date ship_mode customer_id      sales
+id                                                 
+102988  2014-04-05    Second    GM-14695  4251.9200
+110408  2014-10-18    Second    AS-10225  2216.8000
+116246  2014-09-12    Second    LW-17215  3785.2920
+126361  2014-08-04    Second    VD-21670  2126.0340
+126403  2014-09-09    Second    RR-19525  2304.3700
+126683  2014-09-29    Second    PP-18955  2354.9800
+131926  2014-06-01    Second    DW-13480  3745.6300
+143917  2014-07-25    Second    KL-16645  8319.2900
+145387  2014-10-31    Second    AM-10705  2116.5060
+168494  2014-12-12    Second    NP-18700  4630.5105
+116638  2015-01-28    Second    JH-15985  4297.6440
+123113  2015-11-23    Second    AT-10735  2643.0600
+130659  2015-12-04    Second    MS-17365  2201.8640
+135622  2015-12-08    Second    TT-21460  2079.1120
+135685  2015-11-16    Second    MP-18175  2233.0200
+137113  2015-12-01    Second    TW-21025  4210.6500
+100300  2016-06-24    Second    MJ-17740  4823.0900
+108987  2016-09-08    Second    AG-10675  2620.9376
+122903  2016-05-27    Second    LA-16780  3963.5700
+135265  2016-07-07    Second    CC-12370  3136.8680
+136301  2016-03-13    Second    EH-13765  4940.8700
+138478  2016-10-21    Second    DP-13390  4685.0760
+143805  2016-12-01    Second    JD-15895  2145.2500
+147256  2016-10-17    Second    FC-14245  2377.5600
+158841  2016-02-02    Second    SE-20110  8805.0400
+163167  2016-11-28    Second    RF-19345  2673.6900
+117212  2017-02-26    Second    BT-11530  2110.7200
+118892  2017-08-17    Second    TP-21415  4416.1740
+121559  2017-06-01    Second    HW-14935  4472.3200
+123967  2017-11-01    Second    SF-20200  2690.7400
+129021  2017-08-23    Second    PO-18850  4590.3440
+133263  2017-03-31    Second    JE-15610  3098.6100
+138289  2017-01-16    Second    AR-10540  5802.7000
+143567  2017-11-02    Second    TB-21175  3291.0700
+152912  2017-11-09    Second    BM-11650  3013.7800
+158379  2017-09-22    Second    JA-15970  4749.3270
+161956  2017-08-27    Second    DR-12880  2971.7920
+106992  2014-09-19    Second    SB-20290  5579.9400
+135972  2014-09-21    Second    JG-15115  2046.3540
+134558  2015-12-19    Second    PM-19135  3332.9740
+114013  2016-03-13    Second    SC-20770  2550.5870
+167402  2017-01-13    Second    CP-12085  4619.3300
+
+
+
+sales_filter = 2000
+ship_mode_filter = 'Second'
+orders.query('sales > @sales_filter & ship_mode == @ship_mode_filter')
+
+        order_date ship_mode customer_id      sales
+id                                                 
+102988  2014-04-05    Second    GM-14695  4251.9200
+110408  2014-10-18    Second    AS-10225  2216.8000
+116246  2014-09-12    Second    LW-17215  3785.2920
+126361  2014-08-04    Second    VD-21670  2126.0340
+126403  2014-09-09    Second    RR-19525  2304.3700
+126683  2014-09-29    Second    PP-18955  2354.9800
+131926  2014-06-01    Second    DW-13480  3745.6300
+143917  2014-07-25    Second    KL-16645  8319.2900
+145387  2014-10-31    Second    AM-10705  2116.5060
+168494  2014-12-12    Second    NP-18700  4630.5105
+116638  2015-01-28    Second    JH-15985  4297.6440
+123113  2015-11-23    Second    AT-10735  2643.0600
+130659  2015-12-04    Second    MS-17365  2201.8640
+135622  2015-12-08    Second    TT-21460  2079.1120
+135685  2015-11-16    Second    MP-18175  2233.0200
+137113  2015-12-01    Second    TW-21025  4210.6500
+100300  2016-06-24    Second    MJ-17740  4823.0900
+108987  2016-09-08    Second    AG-10675  2620.9376
+122903  2016-05-27    Second    LA-16780  3963.5700
+135265  2016-07-07    Second    CC-12370  3136.8680
+136301  2016-03-13    Second    EH-13765  4940.8700
+138478  2016-10-21    Second    DP-13390  4685.0760
+143805  2016-12-01    Second    JD-15895  2145.2500
+147256  2016-10-17    Second    FC-14245  2377.5600
+158841  2016-02-02    Second    SE-20110  8805.0400
+163167  2016-11-28    Second    RF-19345  2673.6900
+117212  2017-02-26    Second    BT-11530  2110.7200
+118892  2017-08-17    Second    TP-21415  4416.1740
+121559  2017-06-01    Second    HW-14935  4472.3200
+123967  2017-11-01    Second    SF-20200  2690.7400
+129021  2017-08-23    Second    PO-18850  4590.3440
+133263  2017-03-31    Second    JE-15610  3098.6100
+138289  2017-01-16    Second    AR-10540  5802.7000
+143567  2017-11-02    Second    TB-21175  3291.0700
+152912  2017-11-09    Second    BM-11650  3013.7800
+158379  2017-09-22    Second    JA-15970  4749.3270
+161956  2017-08-27    Second    DR-12880  2971.7920
+106992  2014-09-19    Second    SB-20290  5579.9400
+135972  2014-09-21    Second    JG-15115  2046.3540
+134558  2015-12-19    Second    PM-19135  3332.9740
+114013  2016-03-13    Second    SC-20770  2550.5870
+167402  2017-01-13    Second    CP-12085  4619.3300
+
+
+
+# Рахуємо похідні метрики:
+orders['sales'].sum()
+
+2297200.8603000003
+
+
+
+orders.groupby('ship_mode')['sales'].sum()
+
+ship_mode
+First       3.514284e+05
+Same Day    1.283631e+05
+Second      4.591936e+05
+Standard    1.358216e+06
+Name: sales, dtype: float64
+
+
+
+pd.options.display.float_format = '{:,.1f}'.format
+orders.groupby('ship_mode')['sales'].sum()
+
+ship_mode
+First        351,428.4
+Same Day     128,363.1
+Second       459,193.6
+Standard   1,358,215.7
+Name: sales, dtype: float64
+
+
+
+orders.groupby(['ship_mode', 'order_date'])['sales'].sum()
+
+ship_mode  order_date
+First      2014-01-06      12.8
+           2014-01-11       9.9
+           2014-01-14      62.0
+           2014-01-15     149.9
+           2014-01-19     378.6
+                          ...  
+Standard   2017-12-25   1,338.3
+           2017-12-26      63.9
+           2017-12-28     589.6
+           2017-12-29   1,094.8
+           2017-12-30     713.8
+Name: sales, Length: 2498, dtype: float64
+
+
+
+orders.groupby(['ship_mode', 'order_date'])['sales'].agg(['sum', 'count'])
+
+                         sum  count
+ship_mode order_date               
+First     2014-01-06    12.8      1
+          2014-01-11     9.9      1
+          2014-01-14    62.0      1
+          2014-01-15   149.9      1
+          2014-01-19   378.6      1
+                      ...    ...
+Standard  2017-12-25 1,338.3      7
+          2017-12-26    63.9      3
+          2017-12-28   589.6      7
+          2017-12-29 1,094.8      4
+          2017-12-30   713.8      4
+[2498 rows x 2 columns]
+
+
+
+orders.groupby(['ship_mode', 'order_date'])['sales'].agg(['sum']).sort_values(by='sum', ascending=False).head(2)
+
+                          sum
+ship_mode order_date         
+Standard  2014-03-18 26,908.4
+          2016-10-02 18,398.2
+
+
+
+# Об'єднуємо кілька датафреймів:
+customers = pd.read_csv('data/customers.csv', index_col='id')
+
+customers
+                       name      segment           state               city
+id                                                                         
+CG-12520        Claire Gute     Consumer        Kentucky          Henderson
+DV-13045    Darrin Van Huff    Corporate      California        Los Angeles
+SO-20335     Sean O'Donnell     Consumer         Florida    Fort Lauderdale
+BH-11710    Brosina Hoffman     Consumer      California        Los Angeles
+AA-10480       Andrew Allen     Consumer  North Carolina            Concord
+                     ...          ...             ...                ...
+CJ-11875       Carl Jackson    Corporate    Pennsylvania       Philadelphia
+RS-19870         Roy Skaria  Home Office            Iowa         Burlington
+SC-20845         Sung Chung     Consumer        Illinois  Arlington Heights
+RE-19405    Ricardo Emerson     Consumer            Ohio               Kent
+SM-20905  Susan MacKendrick     Consumer            Ohio             Newark
+[793 rows x 4 columns]
+
+
+
+cust_filter = 'CG-12520'
+orders.query('customer_id == @cust_filter')
+
+        order_date ship_mode customer_id  sales
+id                                             
+152156  2016-11-08    Second    CG-12520  993.9
+164098  2017-01-26     First    CG-12520   18.2
+123918  2015-10-15  Same Day    CG-12520  136.7
+
+
+
+new_df = pd.merge(orders, customers, how='inner', left_on='customer_id', right_index=True)
+new_df.columns
+
+Index(['order_date', 'ship_mode', 'customer_id', 'sales', 'name', 'segment',
+       'state', 'city'],
+      dtype='object')
+
+
+
+# Приклад:
+orders_2016 = orders.query("order_date >= '2016-01-01' & order_date <= '2016-12-31'")
+orders_2016.head(2)
+
+        order_date ship_mode customer_id  sales
+id                                             
+100041  2016-11-20  Standard    BF-10975  328.5
+100083  2016-11-24  Standard    CD-11980   24.8
+
+
+
+with_customers_2016 = pd.merge(customers, orders_2016, how='inner', left_index=True,
+                               right_on='customer_id')
+with_customers_2016.head(2)
+
+                   name    segment       state  ... ship_mode customer_id sales
+id                                              ...                            
+152156      Claire Gute   Consumer    Kentucky  ...    Second    CG-12520 993.9
+106656  Darrin Van Huff  Corporate  California  ...     First    DV-13045  23.0
+[2 rows x 8 columns]
+
+
+
+grouped_2016 = with_customers_2016.groupby('city')['sales'].sum()
+grouped_2016.head(2)
+
+city
+Akron         1,763.0
+Albuquerque     692.9
+Name: sales, dtype: float64
+
+
+
+top2 = grouped_2016.sort_values(ascending=False).head(2)
+top2
+
+city
+New York City   53,094.1
+Philadelphia    39,895.5
+Name: sales, dtype: float64
